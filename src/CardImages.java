@@ -20,7 +20,7 @@ public class CardImages {
     private static BufferedImage backPurple = null;
 
     // relative to working directory
-    private static final String IMAGE_DIR = "poker hw x/images";
+    private static final String IMAGE_DIR = "images/";
 
     public static BufferedImage loadCardImage(Card card) 
     {
