@@ -4,6 +4,7 @@
  * Blackjack layout including dealer and player cards.
  * Displays hit, Stand, Reset, and Menu buttons.
  * Players can choose the color of the background and the back of the cards.
+ * Implements different poker chip colors and their corresponding monetary values.
  * 
  */
 import javax.swing.*;
@@ -43,6 +44,25 @@ public class BlackjackWindow extends JFrame {
         controls.add(stand);
         controls.add(reset);
         controls.add(back);
+
+        // different colored chip buttons
+        JButton chipWhite = new JButton("White $1");
+        JButton chipRed   = new JButton("Red $5");
+        JButton chipBlue  = new JButton("Blue $10");
+        JButton chipGreen = new JButton("Green $25");
+        JButton chipBlack = new JButton("Black $100");
+
+        controls.add(chipWhite);
+        controls.add(chipRed);
+        controls.add(chipBlue);
+        controls.add(chipGreen);
+        controls.add(chipBlack);
+
+        chipWhite.addActionListener(e -> tablePanel.addChip("White"));
+        chipRed.addActionListener(e -> tablePanel.addChip("Red"));
+        chipBlue.addActionListener(e -> tablePanel.addChip("Blue"));
+        chipGreen.addActionListener(e -> tablePanel.addChip("Green"));
+        chipBlack.addActionListener(e -> tablePanel.addChip("Black"));
 
         // pick the background color
         JComboBox<String> bgColorBox = new JComboBox<>(new String[]{"Green","Blue","Red","Orange","Purple"});
@@ -106,6 +126,23 @@ public class BlackjackWindow extends JFrame {
 
     // inner panel
     private class BlackjackPanel extends JPanel {
+
+    private List<String> placedChips = new ArrayList<>();
+    private int betAmount = 0;
+
+    public void addChip(String chipColor) 
+    {
+        placedChips.add(chipColor);
+        switch (chipColor) {
+            case "White" -> betAmount += 1;
+            case "Red"   -> betAmount += 5;
+            case "Blue"  -> betAmount += 10;
+            case "Green" -> betAmount += 25;
+            case "Black" -> betAmount += 100;
+        }
+        repaint();
+    }
+
         private List<Card> dealer = new ArrayList<>();
         private List<Card> player = new ArrayList<>();
         private String backColor = "Red";
@@ -160,6 +197,23 @@ public class BlackjackWindow extends JFrame {
                 if(img != null) g2.drawImage(img, x, y, w, h, this);
                 x += w + spacing;
             }
+
+            // drawing the chips 
+            int cx = getWidth() - 150;
+            int cy = getHeight() - 200;
+
+            for (String chip : placedChips) 
+            {
+                BufferedImage chipImg = ChipImages.loadChipImage(chip);
+                if (chipImg != null)
+                    g2.drawImage(chipImg, cx, cy, 60, 60, this);
+                cy -= 70;
+            }
+
+            // amount to bet
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Arial", Font.BOLD, 22));
+            g2.drawString("Bet: $" + betAmount, cx - 20, cy - 20);
         }
     }
 }
