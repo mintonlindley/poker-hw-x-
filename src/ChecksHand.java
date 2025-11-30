@@ -82,22 +82,36 @@ public class ChecksHand
     
     private static int getRankValue(Card.Rank rank) 
     {
-        return switch(rank) 
+        switch (rank) 
         {
-            case TWO -> 0;
-            case THREE -> 1;
-            case FOUR -> 2;
-            case FIVE -> 3;
-            case SIX -> 4;
-            case SEVEN -> 5;
-            case EIGHT -> 6;
-            case NINE -> 7;
-            case TEN -> 8;
-            case JACK -> 9;
-            case QUEEN -> 10;
-            case KING -> 11;
-            case ACE -> 12;
-        };
+            case TWO:
+                return 0;
+            case THREE:
+                return 1;
+            case FOUR:
+                return 2;
+            case FIVE:
+                return 3;
+            case SIX:
+                return 4;
+            case SEVEN:
+                return 5;
+            case EIGHT:
+                return 6;
+            case NINE:
+                return 7;
+            case TEN:
+                return 8;
+            case JACK:
+                return 9;
+            case QUEEN:
+                return 10;
+            case KING:
+                return 11;
+            case ACE:
+                return 12;
+        }
+        return -1; 
     }
 
     //only to hold the result really...
@@ -110,6 +124,9 @@ public class ChecksHand
         {
             this.score = score;
             this.handName = handName;
+        }
+    }
+}
         }
     }
 }
