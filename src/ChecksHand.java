@@ -2,7 +2,8 @@ import java.util.*;
 
 public class ChecksHand 
 {
-    public static HandEvaluation evaluateHand(List<Card> hole, List<Card> board) {
+    public static HandEvaluation evaluateHand(List<Card> hole, List<Card> board) 
+    {
         List<Card> allCards = new ArrayList<>();
         allCards.addAll(hole);
         allCards.addAll(board);
@@ -64,13 +65,16 @@ public class ChecksHand
         
         // this is for a normal straight
         int consecutive = 1;
-        for (int i = 1; i < sorted.size(); i++) {
-            if (sorted.get(i) == sorted.get(i-1) + 1) {
+        for (int i = 1; i < sorted.size(); i++) 
+        {
+            if (sorted.get(i) == sorted.get(i-1) + 1) 
+            {
                 consecutive++;
-                if (consecutive >= 5) return true;
-            } else {
+                if (consecutive >= 5) 
+                    return true;
+            } 
+            else 
                 consecutive = 1;
-            }
         }
         
         // and this is if ace also counts
@@ -124,9 +128,6 @@ public class ChecksHand
         {
             this.score = score;
             this.handName = handName;
-        }
-    }
-}
         }
     }
 }
