@@ -45,8 +45,6 @@ public class TexasGameWindow extends JFrame
         startHandButton.addActionListener(e -> startNewHand());
         controls.add(startHandButton);
 
-        controls.add(new JSeparator(SwingConstants.VERTICAL));
-
         bettingPanel = new Betting();
         
         //buttons to action listener
