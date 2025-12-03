@@ -25,7 +25,7 @@ public class CardImages {
     public static BufferedImage loadCardImage(Card card) 
     {
         if (card == null) return null;
-        String key = (card.getRank().name() + "_" + card.getSuit().name()).toLowerCase();
+        String key = (card.getRank().name() + "_" + "of" + "_" + card.getSuit().name()).toLowerCase();
 
         if (cache.containsKey(key)) return cache.get(key);
 
@@ -64,27 +64,27 @@ public class CardImages {
         try {
         if(color.equalsIgnoreCase("Blue")) {
             if(backBlue != null) return backBlue;
-            backBlue = ImageIO.read(new File(IMAGE_DIR + "/card back blue.png"));
+            backBlue = ImageIO.read(new File(IMAGE_DIR + "card back blue.png"));
             return backBlue;
         } 
         else if(color.equalsIgnoreCase("Green")) {
             if(backGreen != null) return backGreen;
-            backGreen = ImageIO.read(new File(IMAGE_DIR + "/card back green.png"));
+            backGreen = ImageIO.read(new File(IMAGE_DIR + "card back green.png"));
             return backGreen;
         }
         else if(color.equalsIgnoreCase("Orange")) {
             if(backOrange != null) return backOrange;
-            backOrange = ImageIO.read(new File(IMAGE_DIR + "/card back orange.png"));
+            backOrange = ImageIO.read(new File(IMAGE_DIR + "card back orange.png"));
             return backOrange;
         }
         else if(color.equalsIgnoreCase("Purple")) {
             if(backPurple != null) return backPurple;
-            backPurple = ImageIO.read(new File(IMAGE_DIR + "/card back purple.png"));
+            backPurple = ImageIO.read(new File(IMAGE_DIR + "card back purple.png"));
             return backPurple;
         }
         else { 
             if(backRed != null) return backRed;
-            backRed = ImageIO.read(new File(IMAGE_DIR + "/card back red.png"));
+            backRed = ImageIO.read(new File(IMAGE_DIR + "card back red.png"));
             return backRed;
         }
     } catch(Exception e) {
