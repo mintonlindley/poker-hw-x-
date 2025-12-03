@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class ChipImages {
-    private static final String CHIP_DIR = "images/";
+    private static final String CHIP_DIR = new File("images").getAbsolutePath() + File.separator;
 
     /**
      * Loads the chip image based on the specified color, using the expected file naming convention.
