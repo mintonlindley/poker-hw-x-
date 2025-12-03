@@ -200,11 +200,11 @@ public class TexasWindow extends JFrame {
                 BufferedImage img = CardImages.loadBackImage(backColor);
                 if (img != null) 
                 {
-                    int x = (int) (hx + i * (w / 1.5));
-                    int y = hy;
+                    int x2 = (int) (hx + i * (w / 1.5));
+                    int y2 = hy;
                     int dw = (int) (w / 1.3);
                     int dh = (int) (h / 1.3);
-                    g2.drawImage(img, x, y, dw, dh, this);
+                    g2.drawImage(img, x2, y2, dw, dh, this);
                 }
 
             }
