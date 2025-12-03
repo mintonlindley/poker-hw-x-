@@ -13,8 +13,9 @@ public class Betting extends JPanel {
     private int pot = 0;
     private TexasGameWindow gameWindow;
 
-    public Betting() 
+    public Betting(TexasGameWindow gameWindow) 
     {
+        this.gameWindow = gameWindow;
         setLayout(new FlowLayout(FlowLayout.CENTER, 12, 8));
         betBtn = new JButton("Bet"); callBtn = new JButton("Call"); foldBtn = new JButton("Fold"); raiseBtn = new JButton("Raise");
         potLabel = new JLabel("Pot: $0");
@@ -62,4 +63,3 @@ public class Betting extends JPanel {
         potLabel.setText("Pot: $" +pot);
     }
 }
-
