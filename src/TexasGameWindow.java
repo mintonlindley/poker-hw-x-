@@ -46,7 +46,7 @@ public class TexasGameWindow extends JFrame
         startHandButton.addActionListener(e -> startNewHand());
         controls.add(startHandButton);
 
-        bettingPanel = new Betting();
+        bettingPanel = new Betting(this);
         
         //buttons to action listener
         bettingPanel.getBetButton().addActionListener(e -> handleBet());
@@ -56,8 +56,22 @@ public class TexasGameWindow extends JFrame
         
         controls.add(bettingPanel);
 
-        JComboBox<String> bgColorBox = new JComboBox<>(new String[]{"Green", "Blue", "Red", "Gray", "Purple"});
+        JComboBox<String> bgColorBox = new JComboBox<>(new String[]{"Green", "Blue", "Red", "Orange", "Magenta"});
         //need to add implementation for background color change
+        //Lindley help here for switch case
+
+        bgColorBox.addActionListener(e -> 
+        {
+            String color = (String) bgColorBox.getSelectedItem();
+            switch (color) 
+            {
+                case "Green" -> tablePanel.setBgColor(Color.GREEN);
+                case "Blue" -> tablePanel.setBgColor(Color.BLUE);
+                case "Red" -> tablePanel.setBgColor(Color.RED);
+                case "Orange" -> tablePanel.setBgColor(Color.ORANGE);
+                case "Magenta" -> tablePanel.setBgColor(Color.MAGENTA);
+            }
+        });
         
         controls.add(new JLabel("Table Color:"));
         controls.add(bgColorBox);
@@ -95,7 +109,7 @@ public class TexasGameWindow extends JFrame
         computerTurn();
     }
 
-    public void handleFold() 
+    void handleFold() 
     {
         game.fold();
         tablePanel.setComputerHole(game.getComputerHole(), true);
@@ -307,4 +321,6 @@ public class TexasGameWindow extends JFrame
         });
     }
 }
+
+
 
