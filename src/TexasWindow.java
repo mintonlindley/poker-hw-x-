@@ -198,7 +198,15 @@ public class TexasWindow extends JFrame {
             int hy = getHeight() - h - 40;
             for (int i = 0; i < holeCards.size(); i++) {
                 BufferedImage img = CardImages.loadBackImage(backColor);
-                if (img != null) g2.drawImage(img, hx + i * (w / 1.5), hy, w / 1.3, h / 1.3, this);
+                if (img != null) 
+                {
+                    int x = (int) (hx + i * (w / 1.5));
+                    int y = hy;
+                    int dw = (int) (w / 1.3);
+                    int dh = (int) (h / 1.3);
+                    g2.drawImage(img, x, y, dw, dh, this);
+                }
+
             }
 
             // drawing the chips 
