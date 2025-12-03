@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -235,6 +236,7 @@ public class TexasGameWindow extends JFrame
 
             g2.setColor(bgColor);
             g2.fillRect(0, 0, getWidth(), getHeight());
+            String backColor = "Red";
 
             int w = 120;
             int h = 170;
@@ -252,6 +254,11 @@ public class TexasGameWindow extends JFrame
                 g2.drawString("COMMUNITY CARDS", x, y - 15);
                 
                 //need to add card images here
+
+                for (int i = 0; i < communityCards.size(); i++) {
+                    BufferedImage img = CardImages.loadCardImage(communityCards.get(i));
+                    if (img != null) g2.drawImage(img, x + i * (w + spacing), y, w, h, this);
+                }
             }
 
             //player cards
@@ -265,6 +272,11 @@ public class TexasGameWindow extends JFrame
                 g2.drawString("YOUR CARDS", x, y - 10);
                 
                 //need to add cards here
+                for (int i = 0; i < playerCards.size(); i++) {
+                    BufferedImage img = CardImages.loadBackImage(backColor);
+
+                    if (img != null) g2.drawImage(img, (int) (x + i * (w / 1.5)), y, (int) (w / 1.3), (int) (h / 1.3), this);
+                }
             }
 
             //comp cards
@@ -295,3 +307,4 @@ public class TexasGameWindow extends JFrame
         });
     }
 }
+
