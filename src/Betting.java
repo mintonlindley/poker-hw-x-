@@ -11,6 +11,7 @@ public class Betting extends JPanel {
     private JButton betBtn, callBtn, foldBtn, raiseBtn;
     private JLabel potLabel;
     private int pot = 0;
+    private TexasGameWindow gameWindow;
 
     public Betting() 
     {
@@ -23,7 +24,7 @@ public class Betting extends JPanel {
         betBtn.addActionListener(e -> { pot += 5; updatePot(); });
         callBtn.addActionListener(e -> { pot += 2; updatePot(); });
         raiseBtn.addActionListener(e -> { pot += 10; updatePot(); });
-        foldBtn.addActionListener(e -> handleFold());
+        foldBtn.addActionListener(e -> gameWindow.handleFold());
     }
 
     private void updatePot() 
@@ -61,3 +62,4 @@ public class Betting extends JPanel {
         potLabel.setText("Pot: $" +pot);
     }
 }
+
