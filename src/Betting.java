@@ -25,7 +25,7 @@ public class Betting extends JPanel {
         betBtn.addActionListener(e -> { pot += 5; updatePot(); });
         callBtn.addActionListener(e -> { pot += 2; updatePot(); });
         raiseBtn.addActionListener(e -> { pot += 10; updatePot(); });
-        foldBtn.addActionListener(e -> gameWindow.handleFold());
+        foldBtn.addActionListener(e -> TexasGameWindow.handleFold());
     }
 
     private void updatePot() 
