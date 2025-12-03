@@ -4,8 +4,8 @@
  * Provides betting controls (bet, call, fold, raise) in button form and displays the pot.
  * 
  */
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class Betting extends JPanel {
     private JButton betBtn, callBtn, foldBtn, raiseBtn;
@@ -38,5 +38,26 @@ public class Betting extends JPanel {
     { 
         pot = 0; 
         updatePot(); 
+    }
+    public JButton getBetButton()
+    {
+        return betBtn;
+    }
+    public JButton getCallButton()
+    {
+        return callBtn;
+    }
+    public JButton getFoldButton()
+    {
+        return foldBtn;
+    }
+    public JButton getRaiseButton()
+    {
+        return raiseBtn;
+    }
+    public void updatePotDisplay(int potAmount)
+    {
+        pot=potAmount;
+        potLabel.setText("Pot: $" +pot);
     }
 }
