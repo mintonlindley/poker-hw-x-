@@ -1,61 +1,44 @@
 /**
  * ChipImages.java
  *
- * Loads PNG images from the images folder based on the color.
- * Caches loaded images for faster access.
- * The expected file format is "<color> poker chip.png" (e.g., "white poker chip.png").
+ * Loads PNG images from the images folder.
+ * Now specifically expects the chip files to be named in the format: "color poker chip.png".
+ *
  */
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ChipImages {
     private static final String CHIP_DIR = "images/";
-    
-    // Cache to store loaded images using the color name as the key
-    private static final Map<String, BufferedImage> cache = new HashMap<>();
 
     /**
-     * Loads the image for a specific poker chip color.
-     * Assumes the file is named "<color> poker chip.png" (e.g., "white poker chip.png").
-     * @param color The color of the chip (e.g., "white", "red").
-     * @return The loaded BufferedImage, or null if loading fails.
+     * Loads the chip image based on the specified color, using the expected file naming convention.
+     * Expected file name format: "[color] poker chip.png" (e.g., "white poker chip.png").
+     *
+     * @param color The color of the chip (e.g., "White", "Red", "Black").
+     * @return The loaded BufferedImage, or null if loading fails or the file is missing.
      */
     public static BufferedImage loadChipImage(String color) {
-        // Normalize color to lowercase for consistent file lookup and cache key
-        String normalizedColor = color.toLowerCase();
+        // Construct the expected file name based on the user's requested format.
+        // e.g., "white" + " poker chip.png" = "white poker chip.png"
+        String expectedFileName = color.toLowerCase() + " poker chip.png";
         
-        // 1. Check cache first
-        if (cache.containsKey(normalizedColor)) {
-            return cache.get(normalizedColor);
-        }
+        // Construct the file object using the CHIP_DIR
+        File chipFile = new File(CHIP_DIR + expectedFileName);
 
-        // Construct the expected filename based on the user's information
-        String filename = normalizedColor + " poker chip.png";
-        String filepath = CHIP_DIR + filename;
-        
-        File f = new File(filepath);
-        
-        if (!f.exists()) {
-            System.out.println("Missing chip image file: " + filepath);
+        if (!chipFile.exists()) {
+            System.out.println("Missing chip image: Expected file at " + chipFile.getPath());
             return null;
         }
 
-        // 2. Load image and cache it
         try {
-            BufferedImage img = ImageIO.read(f);
-            if (img != null) {
-                cache.put(normalizedColor, img);
-                return img;
-            }
+            // Directly read the constructed file path
+            return ImageIO.read(chipFile);
         } catch (Exception e) {
-            System.out.println("Failed to read chip image: " + filepath);
-            e.printStackTrace();
+            System.out.println("Failed to read chip image file: " + chipFile.getName());
+            e.printStackTrace(); // Print stack trace for debugging
+            return null;
         }
-        
-        System.out.println("Failed to load chip for color: " + color);
-        return null;
     }
 }
