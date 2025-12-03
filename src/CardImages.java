@@ -7,7 +7,7 @@
  */
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,39 +20,31 @@ public class CardImages {
     private static BufferedImage backPurple = null;
 
     // relative to working directory
-    private static final String IMAGE_DIR = "images/";
+    private static final String RESOURCE_PATH = "/images/";
 
     public static BufferedImage loadCardImage(Card card) 
     {
         if (card == null) return null;
-        String key = (card.getRank().name() + "_" + "of" + "_" + card.getSuit().name()).toLowerCase();
+        String key = (card.getRank().name() + "_" + card.getSuit().name()).toLowerCase();
 
         if (cache.containsKey(key)) return cache.get(key);
-
-        File direct = new File(IMAGE_DIR);
-        if (!direct.exists() || !direct.isDirectory()) return null;
 
         String rankWord = card.getRank().name().toLowerCase();
         String suitWord = card.getSuit().name().toLowerCase();
 
-        // search for file containing both rank and suit "keywords"
-        for (File f : direct.listFiles()) 
-        {
-            String name = f.getName().toLowerCase();
-            if (name.endsWith(".png")) {
-                if (name.contains(rankWord) && name.contains(suitWord)) 
-                {
-                    try { 
-                        BufferedImage img = ImageIO.read(f);
-                        cache.put(key, img);
-                        return img;
-                    } catch (Exception e) { // error checking
-                        System.err.println("Failed to load image: " + f.getPath() + " -> " + e);
-                    }
-                }
+        String expectedFileName = rankWord + "_of_" + suitWord + ".png";
+
+        try {
+            BufferedImage img = ImageIO.read(CardImages.class.getResourceAsStream(RESOURCE_PATH + expectedFileName));
+            if (img !=null)
+            {
+                cache.put(key, img);
+                return img;
             }
-        }
-        // image not found in directory
+        } catch (IOException e) {
+            System.err.println("Failed to load card image for " + card.toString() + ". Error: " + e.getMessage());
+            }
+
         return null;
     }
 
@@ -61,35 +53,35 @@ public class CardImages {
     // default color will be red
     public static BufferedImage loadBackImage(String color) 
     {
+        String normalizedColor = color.equalsIgnoreCase("Red") ? "red" :
+                                 color.equalsIgnoreCase("Blue") ? "blue" :
+                                 color.equalsIgnoreCase("Green") ? "green" :
+                                 color.equalsIgnoreCase("Orange") ? "orange" :
+                                 color.equalsIgnoreCase("Purple") ? "purple" : "red"; // Default to red
+
         try {
-        if(color.equalsIgnoreCase("Blue")) {
-            if(backBlue != null) return backBlue;
-            backBlue = ImageIO.read(new File(IMAGE_DIR + "card back blue.png"));
-            return backBlue;
-        } 
-        else if(color.equalsIgnoreCase("Green")) {
-            if(backGreen != null) return backGreen;
-            backGreen = ImageIO.read(new File(IMAGE_DIR + "card back green.png"));
-            return backGreen;
+            switch (normalizedColor) {
+                case "red":
+                    if(backRed == null) backRed = ImageIO.read(CardImages.class.getResourceAsStream(RESOURCE_PATH + "card back red.png"));
+                    return backRed;
+                case "blue":
+                    if(backBlue == null) backBlue = ImageIO.read(CardImages.class.getResourceAsStream(RESOURCE_PATH + "card back blue.png"));
+                    return backBlue;
+                case "green":
+                    if(backGreen == null) backGreen = ImageIO.read(CardImages.class.getResourceAsStream(RESOURCE_PATH + "card back green.png"));
+                    return backGreen;
+                case "orange":
+                    if(backOrange == null) backOrange = ImageIO.read(CardImages.class.getResourceAsStream(RESOURCE_PATH + "card back orange.png"));
+                    return backOrange;
+                case "purple":
+                    if(backPurple == null) backPurple = ImageIO.read(CardImages.class.getResourceAsStream(RESOURCE_PATH + "card back purple.png"));
+                    return backPurple;
+                default:
+                    return backRed; // Fallback
+            }
+        } catch(IOException e) {
+            System.err.println("Failed to load back image for " + normalizedColor + ". Ensure file 'card back " + normalizedColor + ".png' is in the /images/ folder on the classpath.");
+            return null;
         }
-        else if(color.equalsIgnoreCase("Orange")) {
-            if(backOrange != null) return backOrange;
-            backOrange = ImageIO.read(new File(IMAGE_DIR + "card back orange.png"));
-            return backOrange;
-        }
-        else if(color.equalsIgnoreCase("Purple")) {
-            if(backPurple != null) return backPurple;
-            backPurple = ImageIO.read(new File(IMAGE_DIR + "card back purple.png"));
-            return backPurple;
-        }
-        else { 
-            if(backRed != null) return backRed;
-            backRed = ImageIO.read(new File(IMAGE_DIR + "card back red.png"));
-            return backRed;
-        }
-    } catch(Exception e) {
-        System.err.println("Failed to load back image: " + e);
-        return null;
-    }
     }
 }
