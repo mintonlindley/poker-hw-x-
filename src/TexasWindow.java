@@ -13,14 +13,14 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TexasGameWindow extends JFrame {
+public class TexasWindow extends JFrame {
 
     private Deck deck = new Deck();
     private List<Card> community = new ArrayList<>();
     private List<Card> playerHole = new ArrayList<>();
     private TexasPanel tablePanel;
 
-    public TexasGameWindow() {
+    public TexasWindow() {
         super("Texas Hold'em");
         setSize(900, 600);
         setLocationRelativeTo(null);
