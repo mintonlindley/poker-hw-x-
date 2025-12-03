@@ -8,8 +8,8 @@ public class BJController
 {
     //initialize intial state of variables
     private final Deck deck;
-    private final Hand dealerHand;
-    private final Hand playerHand;
+    private final BJHand dealerHand;
+    private final BJHand playerHand;
 
     //create flags to check when to stop/start game
     private boolean playerTurnActive;
@@ -18,8 +18,8 @@ public class BJController
     public BJController()
     {
         this.deck = new Deck();
-        this.dealerHand = new Hand();
-        this.playerHand = new Hand();
+        this.dealerHand = new BJHand();
+        this.playerHand = new BJHand();
         this.playerTurnActive = false;
         this.gameInProgress = false;
     }
@@ -106,8 +106,8 @@ public class BJController
     }
 
     //accessors in case GUI needs to display info:
-    public Hand getPlayerHand() {return playerHand; }
-    public Hand getDealerHand() {return dealerHand; }
+    public BJHand getPlayerHand() {return playerHand; }
+    public BJHand getDealerHand() {return dealerHand; }
     public boolean isPlayerTurnActive() {return playerTurnActive; }
     public boolean isGameInProgress() { return gameInProgress; }
 }

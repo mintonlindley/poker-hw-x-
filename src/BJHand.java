@@ -5,11 +5,11 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Hand 
+public class BJHand 
 {
     private final List<Card> cards;
 
-    public Hand()
+    public BJHand()
     {
         this.cards = new ArrayList<>();
     }

@@ -12,13 +12,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-// Import necessary class files
-import CardImages;
-import ChipImages;
-import Menu; 
-import Deck;
-import Card;
-
 public class BlackjackWindow extends JFrame {
 
     private Deck deck = new Deck();
