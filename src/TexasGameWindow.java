@@ -95,7 +95,7 @@ public class TexasGameWindow extends JFrame
         computerTurn();
     }
 
-    private void handleFold() 
+    public void handleFold() 
     {
         game.fold();
         tablePanel.setComputerHole(game.getComputerHole(), true);
