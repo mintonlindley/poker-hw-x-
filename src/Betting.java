@@ -21,7 +21,6 @@ public class Betting extends JPanel {
         potLabel = new JLabel("Pot: $0");
         add(betBtn); add(callBtn); add(foldBtn); add(raiseBtn); add(potLabel);
 
-        // replace once actual logic is implemented 
         betBtn.addActionListener(e -> { pot += 5; updatePot(); });
         callBtn.addActionListener(e -> { pot += 2; updatePot(); });
         raiseBtn.addActionListener(e -> { pot += 10; updatePot(); });
