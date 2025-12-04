@@ -278,8 +278,12 @@ public class TexasGameWindow extends JFrame
                 g2.setFont(new Font("Arial", Font.BOLD, 16));
                 g2.drawString("COMMUNITY CARDS", x, y - 15);
                 
-                //INSERT COMMUNITY CARDS HERE
-               
+                for (int i = 0; i < communityCards.size(); i++) 
+                {
+                    BufferedImage img = CardImages.loadCardImage(communityCards.get(i));
+                    if (img != null)
+                        g2.drawImage(img, x + i * (cardWidth + spacing), y, cardWidth, cardHeight, this);
+                }
             }
 
             //draw player cards at the bottom
@@ -292,7 +296,11 @@ public class TexasGameWindow extends JFrame
                 g2.setFont(new Font("Arial", Font.BOLD, 18));
                 g2.drawString("YOUR CARDS", x, y - 10);
                 
-                //INSERT PLAYER CARDS HERE
+                for (int i = 0; i < playerCards.size(); i++) {
+                    BufferedImage img = CardImages.loadCardImage(playerCards.get(i));
+                    if (img != null)
+                        g2.drawImage(img, x + i * (cardWidth + spacing), y, cardWidth, cardHeight, this);
+                }
             }
 
             //draw computer cards at the top
@@ -305,7 +313,18 @@ public class TexasGameWindow extends JFrame
                 g2.setFont(new Font("Arial", Font.BOLD, 18));
                 g2.drawString("COMPUTER'S CARDS", x, y - 10);
                 
-                //INSERT COMPUTER CARDS HERE: these are the back of the cards unless showComputerCards is true
+                for (int i = 0; i < computerCards.size(); i++) 
+                {
+                    BufferedImage img;
+                
+                    if (showComputerCards)
+                        img = CardImages.loadCardImage(computerCards.get(i));   // face-up
+                    else
+                        img = CardImages.loadBackImage(backColor);               // face-down
+                
+                    if (img != null)
+                        g2.drawImage(img, x + i * (cardWidth + spacing), y, cardWidth, cardHeight, this);
+                }
             }
         }
     }
