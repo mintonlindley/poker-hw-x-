@@ -146,18 +146,14 @@ public class TexasGameWindow extends JFrame
         }
         
         if (game.raised()) 
-        {
             return; 
-        }
         
         //move to next stage
         String stage = game.advanceStage();
         chipInfoArea.append(stage + "\n");
         
         if (stage.equals("SHOWDOWN")) 
-        {
             showdown();
-        }
         else 
         {
             tablePanel.setCommunity(game.getCommunity());
@@ -180,13 +176,9 @@ public class TexasGameWindow extends JFrame
         if (game.isGameOver()) 
         {
             if (game.getPlayerTotalChips() <= 0) 
-            {
                 JOptionPane.showMessageDialog(this, "Game Over! You're out of chips!");
-            }
             else 
-            {
                 JOptionPane.showMessageDialog(this, "You win! Computer is out of chips!");
-            }
         }
     }
 
