@@ -1,9 +1,7 @@
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
-
 
 public class TexasGameWindow extends JFrame 
 {
@@ -13,12 +11,10 @@ public class TexasGameWindow extends JFrame
     private JTextArea chipInfoArea;
     private JButton startHandButton;
 
-    //basic gui setup here
     public TexasGameWindow() 
     {
         super("Texas Hold'em Poker");
         setSize(1100, 700);
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -26,19 +22,19 @@ public class TexasGameWindow extends JFrame
         tablePanel = new TexasPanel();
         add(tablePanel, BorderLayout.CENTER);
 
-        // Right panel for chip info
+        //right panel
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.setPreferredSize(new Dimension(300, 700));
         
-        chipInfoArea = new JTextArea(20, 25);
+        chipInfoArea = new JTextArea(25, 25);
         chipInfoArea.setEditable(false);
         chipInfoArea.setFont(new Font("Monospaced", Font.PLAIN, 11));
         JScrollPane chipScroll = new JScrollPane(chipInfoArea);
         rightPanel.add(chipScroll);
         add(rightPanel, BorderLayout.EAST);
 
-        // Control panel
+        //bottom panel with buttons
         JPanel controls = new JPanel();
         controls.setLayout(new FlowLayout());
 
@@ -48,7 +44,7 @@ public class TexasGameWindow extends JFrame
 
         bettingPanel = new Betting(this);
         
-        //buttons to action listener
+        //add button listeners
         bettingPanel.getBetButton().addActionListener(e -> handleBet());
         bettingPanel.getCallButton().addActionListener(e -> handleCall());
         bettingPanel.getFoldButton().addActionListener(e -> handleFold());
@@ -56,25 +52,31 @@ public class TexasGameWindow extends JFrame
         
         controls.add(bettingPanel);
 
+        //table color options
         JComboBox<String> bgColorBox = new JComboBox<>(new String[]{"Green", "Blue", "Red", "Orange", "Magenta"});
-        //need to add implementation for background color change
-        //Lindley help here for switch case
-
         bgColorBox.addActionListener(e -> 
         {
             String color = (String) bgColorBox.getSelectedItem();
-            switch (color) 
-            {
-                case "Green" -> tablePanel.setBgColor(Color.GREEN);
-                case "Blue" -> tablePanel.setBgColor(Color.BLUE);
-                case "Red" -> tablePanel.setBgColor(Color.RED);
-                case "Orange" -> tablePanel.setBgColor(Color.ORANGE);
-                case "Magenta" -> tablePanel.setBgColor(Color.MAGENTA);
-            }
+            if(color.equals("Green"))
+                tablePanel.setBgColor(Color.GREEN);
+            else if(color.equals("Blue"))
+                tablePanel.setBgColor(Color.BLUE);
+            else if(color.equals("Red"))
+                tablePanel.setBgColor(Color.RED);
+            else if(color.equals("Orange"))
+                tablePanel.setBgColor(Color.ORANGE);
+            else if(color.equals("Magenta"))
+                tablePanel.setBgColor(Color.MAGENTA);
         });
-        
         controls.add(new JLabel("Table Color:"));
         controls.add(bgColorBox);
+
+        //card back color options
+        //INSERT CARD BACK COLOR OPTIONS HERE
+        JComboBox<String> backBox = new JComboBox<>(new String[]{"Red","Blue","Green","Orange","Purple"});
+        backBox.addActionListener(e -> tablePanel.setBackColor((String) backBox.getSelectedItem()));
+        controls.add(new JLabel("Card Back:"));
+        controls.add(backBox);
 
         add(controls, BorderLayout.SOUTH);
 
@@ -82,8 +84,7 @@ public class TexasGameWindow extends JFrame
         setVisible(true);
     }
 
-    //handling all new button logic
-    //starts hand
+    //start a new hand
     private void startNewHand() 
     {
         game.startNewHand();
@@ -95,65 +96,76 @@ public class TexasGameWindow extends JFrame
         bettingPanel.resetPot();
     }
 
+    //player actions: bet, call, fold, raise
     private void handleBet() 
     {
-        game.raise(5);
+        String result = game.raise(5);
+        chipInfoArea.append("You bet $5\n");
         updateChipDisplay();
         computerTurn();
     }
 
     private void handleCall() 
     {
-        game.call();
+        String result = game.call();
+        chipInfoArea.append("You called\n");
         updateChipDisplay();
         computerTurn();
     }
 
-    void handleFold() 
+    public void handleFold() 
     {
         game.fold();
         tablePanel.setComputerHole(game.getComputerHole(), true);
         tablePanel.repaint();
         updateChipDisplay();
-        JOptionPane.showMessageDialog(this, "You folded! Computer wins.");
+        JOptionPane.showMessageDialog(this, "You folded! Computer wins $" + game.getPot());
     }
 
-    //raise is always by 10
     private void handleRaise() 
     {
-        game.raise(10);
+        String result = game.raise(10);
+        chipInfoArea.append("You raised by $10\n");
         updateChipDisplay();
         computerTurn();
     }
 
+    //computer turn
     private void computerTurn() 
     {
-        //comp does random action
-        game.computerAction();
+        String computerAction = game.computerAction();
         updateChipDisplay();
+        chipInfoArea.append("\nComputer: " + computerAction + "\n");
         
-        //whatever comp does, the game logic:
-        if (game.raised()) 
+        if (computerAction.contains("folded")) 
         {
-            return; //player turn if raised
+            tablePanel.setComputerHole(game.getComputerHole(), true);
+            tablePanel.repaint();
+            JOptionPane.showMessageDialog(this, computerAction);
+            return;
         }
         
+        if (game.raised()) 
+        {
+            return; 
+        }
+        
+        //move to next stage
         String stage = game.advanceStage();
+        chipInfoArea.append(stage + "\n");
         
         if (stage.equals("SHOWDOWN")) 
         {
             showdown();
-        } 
+        }
         else 
         {
-            //if not reset to next stage
             tablePanel.setCommunity(game.getCommunity());
             tablePanel.repaint();
-            updateChipDisplay();
         }
     }
 
-    //last round 
+    //showdown to see who wins
     private void showdown() 
     {
         tablePanel.setComputerHole(game.getComputerHole(), true);
@@ -161,49 +173,54 @@ public class TexasGameWindow extends JFrame
         
         String result = game.showdown();
         updateChipDisplay();
-        bettingPanel.updatePotDisplay(game.getPot());
+        bettingPanel.updatePotDisplay(0);
         
         JOptionPane.showMessageDialog(this, result);
         
         if (game.isGameOver()) 
         {
             if (game.getPlayerTotalChips() <= 0) 
+            {
                 JOptionPane.showMessageDialog(this, "Game Over! You're out of chips!");
+            }
             else 
+            {
                 JOptionPane.showMessageDialog(this, "You win! Computer is out of chips!");
+            }
         }
     }
 
-    //sidebar info
+    //update the chip display on the right side
     private void updateChipDisplay() 
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("YOUR CHIPS\n");
-        sb.append(String.format("White ($1):   %3d = $%d\n", game.getPlayerWhiteChips(), game.getPlayerWhiteChips() * 1));
-        sb.append(String.format("Red ($5):     %3d = $%d\n", game.getPlayerRedChips(), game.getPlayerRedChips() * 5));
-        sb.append(String.format("Blue ($10):   %3d = $%d\n", game.getPlayerBlueChips(), game.getPlayerBlueChips() * 10));
-        sb.append(String.format("Green ($25):  %3d = $%d\n", game.getPlayerGreenChips(), game.getPlayerGreenChips() * 25));
-        sb.append(String.format("Black ($100): %3d = $%d\n", game.getPlayerBlackChips(), game.getPlayerBlackChips() * 100));
-        sb.append(String.format("TOTAL: $%d\n\n", game.getPlayerTotalChips()));
+        String display = "";
         
-        sb.append("\nCOMPUTER CHIPS\n");
-        sb.append(String.format("White ($1):   %3d = $%d\n", game.getComputerWhiteChips(), game.getComputerWhiteChips() * 1));
-        sb.append(String.format("Red ($5):     %3d = $%d\n", game.getComputerRedChips(), game.getComputerRedChips() * 5));
-        sb.append(String.format("Blue ($10):   %3d = $%d\n", game.getComputerBlueChips(), game.getComputerBlueChips() * 10));
-        sb.append(String.format("Green ($25):  %3d = $%d\n", game.getComputerGreenChips(), game.getComputerGreenChips() * 25));
-        sb.append(String.format("Black ($100): %3d = $%d\n", game.getComputerBlackChips(), game.getComputerBlackChips() * 100));
-        sb.append(String.format("TOTAL: $%d\n\n", game.getComputerTotalChips()));
+        display = display + "YOUR CHIPS\n";
+        display = display + "White ($1):   " + game.getPlayerWhiteChips() + " = $" + (game.getPlayerWhiteChips() * 1) + "\n";
+        display = display + "Red ($5):     " + game.getPlayerRedChips() + " = $" + (game.getPlayerRedChips() * 5) + "\n";
+        display = display + "Blue ($10):   " + game.getPlayerBlueChips() + " = $" + (game.getPlayerBlueChips() * 10) + "\n";
+        display = display + "Green ($25):  " + game.getPlayerGreenChips() + " = $" + (game.getPlayerGreenChips() * 25) + "\n";
+        display = display + "Black ($100): " + game.getPlayerBlackChips() + " = $" + (game.getPlayerBlackChips() * 100) + "\n";
+        display = display + "TOTAL: $" + game.getPlayerTotalChips() + "\n\n";
         
-        sb.append("\nPOT INFO\n");
-        sb.append(String.format("Pot: $%d\n", game.getPot()));
-        sb.append(String.format("Current Bet: $%d\n", game.getCurrentBet()));
-        sb.append(String.format("Your Bet: $%d\n", game.getPlayerBetThisRound()));
+        display = display + "COMPUTER CHIPS\n";
+        display = display + "White ($1):   " + game.getComputerWhiteChips() + " = $" + (game.getComputerWhiteChips() * 1) + "\n";
+        display = display + "Red ($5):     " + game.getComputerRedChips() + " = $" + (game.getComputerRedChips() * 5) + "\n";
+        display = display + "Blue ($10):   " + game.getComputerBlueChips() + " = $" + (game.getComputerBlueChips() * 10) + "\n";
+        display = display + "Green ($25):  " + game.getComputerGreenChips() + " = $" + (game.getComputerGreenChips() * 25) + "\n";
+        display = display + "Black ($100): " + game.getComputerBlackChips() + " = $" + (game.getComputerBlackChips() * 100) + "\n";
+        display = display + "TOTAL: $" + game.getComputerTotalChips() + "\n\n";
+        
+        display = display + "POT INFO\n";
+        display = display + "Pot: $" + game.getPot() + "\n";
+        display = display + "Current Bet: $" + game.getCurrentBet() + "\n";
+        display = display + "Your Bet: $" + game.getPlayerBetThisRound() + "\n";
         
         int toCall = game.getAmountToCall();
-        sb.append(String.format("\nTo Call: $%d\n", toCall));
-        sb.append("\nStage: " + game.getCurrentStage());
+        display = display + "To Call: $" + toCall + "\n";
+        display = display + "\nStage: " + game.getCurrentStage();
         
-        chipInfoArea.setText(sb.toString());
+        chipInfoArea.setText(display);
         bettingPanel.updatePotDisplay(game.getPot());
     }
 
@@ -213,9 +230,9 @@ public class TexasGameWindow extends JFrame
         private List<Card> playerCards = new ArrayList<>();
         private List<Card> computerCards = new ArrayList<>();
         private boolean showComputerCards = false;
+        private String backColor = "Red";
         private Color bgColor = new Color(5, 100, 25);
 
-        //card setters using lists... have to link the lists to the card images
         public void setCommunity(List<Card> c) 
         { 
             communityCards = new ArrayList<>(c); 
@@ -235,66 +252,59 @@ public class TexasGameWindow extends JFrame
             repaint();
         }
         
+        public void setBackColor(String color) 
+        { 
+            backColor = color; 
+            repaint(); 
+        }
+        
         public void setBgColor(Color c) 
         { 
             bgColor = c; 
             repaint(); 
         }
 
-        //main display method
-        @Override
-        protected void paintComponent(Graphics g) 
+        public void paintComponent(Graphics g) 
         {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
-
             g2.setColor(bgColor);
             g2.fillRect(0, 0, getWidth(), getHeight());
-            String backColor = "Red";
-
-            int w = 120;
-            int h = 170;
+            
+            int cardWidth = 120;
+            int cardHeight = 170;
             int spacing = 15;
 
-            //community cards
-            if (!communityCards.isEmpty()) 
+            //draw community cards in the middle
+            if (communityCards.size() > 0) 
             {
-                int totalW = communityCards.size() * (w + spacing) - spacing;
-                int x = (getWidth() - totalW) / 2;
+                int totalWidth = communityCards.size() * (cardWidth + spacing) - spacing;
+                int x = (getWidth() - totalWidth) / 2;
                 int y = getHeight() / 3;
                 
                 g2.setColor(Color.WHITE);
                 g2.setFont(new Font("Arial", Font.BOLD, 16));
                 g2.drawString("COMMUNITY CARDS", x, y - 15);
                 
-                //need to add card images here
-
-                for (int i = 0; i < communityCards.size(); i++) {
-                    BufferedImage img = CardImages.loadCardImage(communityCards.get(i));
-                    if (img != null) g2.drawImage(img, x + i * (w + spacing), y, w, h, this);
-                }
+                //INSERT COMMUNITY CARDS HERE
+               
             }
 
-            //player cards
-            if (!playerCards.isEmpty()) 
+            //draw player cards at the bottom
+            if (playerCards.size() > 0) 
             {
                 int x = 40;
-                int y = getHeight() - h - 40;
+                int y = getHeight() - cardHeight - 40;
                 
                 g2.setColor(Color.WHITE);
                 g2.setFont(new Font("Arial", Font.BOLD, 18));
                 g2.drawString("YOUR CARDS", x, y - 10);
                 
-                //need to add cards here
-                for (int i = 0; i < playerCards.size(); i++) {
-                    BufferedImage img = CardImages.loadBackImage(backColor);
-
-                    if (img != null) g2.drawImage(img, (int) (x + i * (w / 1.5)), y, (int) (w / 1.3), (int) (h / 1.3), this);
-                }
+                //INSERT PLAYER CARDS HERE
             }
 
-            //comp cards
-            if (!computerCards.isEmpty()) 
+            //draw computer cards at the top
+            if (computerCards.size() > 0) 
             {
                 int x = 40;
                 int y = 50;
@@ -303,22 +313,14 @@ public class TexasGameWindow extends JFrame
                 g2.setFont(new Font("Arial", Font.BOLD, 18));
                 g2.drawString("COMPUTER'S CARDS", x, y - 10);
                 
-                //add computer cards here
+                //INSERT COMPUTER CARDS HERE: these are the back of the cards unless showComputerCards is true
             }
         }
     }
 
-    //calling
     public static void main(String[] args) 
     {
-        SwingUtilities.invokeLater(new Runnable() 
-        {
-            @Override
-            public void run() 
-            {
-                new TexasGameWindow();
-            }
-        });
+        SwingUtilities.invokeLater(() -> new TexasGameWindow());
     }
 }
 
