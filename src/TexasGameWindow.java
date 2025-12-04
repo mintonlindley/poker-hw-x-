@@ -2,6 +2,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
 
 public class TexasGameWindow extends JFrame 
 {
